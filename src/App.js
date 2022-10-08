@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 function App() {
+  const [data, setData] = useState("")
+
+
+  useEffect(() => {
+    axios.get("https://ozujkabor65f6qi4xyuv3adxpe0bqmhv.lambda-url.ap-northeast-1.on.aws/").then(
+      (res) => {
+          setData(res.data)
+      }).catch((err) => console.log(err))
+
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+      <h2>
+        SGD Exchange Rate
+      </h2>
+      {data["timestamp"] && <p>Updated as of: {String(new Date(data["timestamp"]))}</p>}
+      {data["rates"] && Object.keys(data["rates"]).map((key, index) => {
+        return <p key={index}>
+          {key}: {data["rates"][key]}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      })
+      }
     </div>
   );
 }
